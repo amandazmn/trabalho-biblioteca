@@ -13,5 +13,12 @@ def test_calcula_multa_parametrizado(dias_emprestimo, esperado):
     assert calcular_multa(data_emprestimo, data_devolucao) == pytest.approx(esperado)
 
 def test_calcula_multa_dias_negativos():
-    with pytest.raises(ValueError):
-        calcular_multa(-1)
+    data_emprestimo = date.today()
+    data_devolucao = data_emprestimo - timedelta(days=1)
+    with pytest.raises(ValueError, match="Data de devolução anterior ao empréstimo"):
+        calcular_multa(data_emprestimo, data_devolucao)
+
+def test_calcula_multa_sem_atraso():
+    data_emprestimo = date.today()
+    data_devolucao = data_emprestimo + timedelta(days=5)
+    assert calcular_multa(data_emprestimo, data_devolucao) == 0.0

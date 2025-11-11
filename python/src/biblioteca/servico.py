@@ -2,6 +2,9 @@ from datetime import date
 from .modelos import Emprestimo
 
 def calcular_multa(data_emprestimo: date, data_devolucao: date, dias_prazo: int = 7, multa_por_dia: float = 2.0) -> float:
+    if data_devolucao < data_emprestimo:
+        raise ValueError("Data de devolução anterior ao empréstimo")
+
     dias_atraso = (data_devolucao - data_emprestimo).days - dias_prazo
     if dias_atraso > 0:
         return dias_atraso * multa_por_dia
@@ -33,3 +36,20 @@ class BibliotecaService:
         )
         self.repo.salvar_emprestimo(emp)
         return emp
+
+    def devolver(self, usuario_id, livro_id):
+            for emp in self.repo.emprestimos:
+                if emp.usuario_id == usuario_id and emp.livro_id == livro_id and emp.data_devolucao is None:
+                    emp.data_devolucao = self.relogio.hoje() if self.relogio else date.today()
+                    livro = self.repo.livros[livro_id]
+                    livro.disponivel = True
+                    dias = (emp.data_devolucao - emp.data_emprestimo).days
+                    multa = calcular_multa(emp.data_emprestimo, emp.data_devolucao)
+                    if multa > 0 and self.email:
+                        self.email.enviar(
+                            usuario_id,
+                            "Multa por atraso",
+                            f"Valor da multa: R${multa:.2f}",
+                        )
+                    return multa
+            raise ValueError("Empréstimo não encontrado")
