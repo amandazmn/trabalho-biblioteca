@@ -33,7 +33,27 @@ O código é modular, extensível e totalmente coberto por testes automatizados.
 ## Estrutura do Projeto
 
 
-<pre> ```plaintext python/ ├── src/ │ └── biblioteca/ │ ├── modelos.py # Define entidades: Livro, Usuário, Empréstimo │ ├── repositorio.py # Repositório em memória para persistência │ ├── servico.py # Lógica principal: empréstimos, devoluções, multas │ ├── fatura_service.py # Geração de faturas por atraso │ ├── email_service.py # Simula envio de notificações por e-mail │ ├── relogio.py # Abstração para controle de datas (testabilidade) │ └── __init__.py ├── tests/ # Testes unitários e de integração │ ├── test_emprestimo.py │ ├── test_devolucao_email_multa.py │ ├── test_fatura.py │ ├── test_modelos_repositorio.py │ └── ... ├── requirements.txt └── pytest.ini ``` </pre>
+```plaintext
+python/
+├── src/
+│   └── biblioteca/
+│       ├── modelos.py              # Define entidades: Livro, Usuário, Empréstimo
+│       ├── repositorio.py          # Repositório em memória para persistência
+│       ├── servico.py              # Lógica principal: empréstimos, devoluções, multas
+│       ├── fatura_service.py       # Geração de faturas por atraso
+│       ├── email_service.py        # Simula envio de notificações por e-mail
+│       ├── relogio.py              # Abstração para controle de datas (testabilidade)
+│       └── __init__.py
+├── tests/                          # Testes unitários e de integração
+│   ├── test_emprestimo.py
+│   ├── test_devolucao_email_multa.py
+│   ├── test_fatura.py
+│   ├── test_modelos_repositorio.py
+│   └── ...
+├── requirements.txt
+└── pytest.ini
+```
+
 
 
 ---
@@ -171,6 +191,7 @@ demonstrando a importância das boas práticas de teste, automação e TDD no ci
 
 **Católica SC – Engenharia de Software – 2025/2**  
 *Trabalho Acadêmico de Teste de Software*
+
 
 
 
