@@ -178,6 +178,7 @@ source .venv/bin/activate  # ou .venv\Scripts\activate no Windows
 pip install -r requirements.txt
 pytest -v
 `
+
 <img width="834" height="886" alt="image" src="https://github.com/user-attachments/assets/d9617c71-a0d3-432b-812e-d594d9244eda" />
 
 
@@ -191,6 +192,7 @@ demonstrando a importância das boas práticas de teste, automação e TDD no ci
 
 **Católica SC – Engenharia de Software – 2025/2**  
 *Trabalho Acadêmico de Teste de Software*
+
 
 
 
