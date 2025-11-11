@@ -161,7 +161,6 @@ O projeto utiliza GitHub Actions para CI/CD automatizado:
     1. Instalação do Python e dependências (requirements.txt)
     2. Execução da suíte de testes com Pytest     
     3. Geração de relatório de cobertura
-    4. (Opcional) Upload para Codecov ou similar
 
 ---
 
@@ -192,6 +191,7 @@ demonstrando a importância das boas práticas de teste, automação e TDD no ci
 
 **Católica SC – Engenharia de Software – 2025/2**  
 *Trabalho Acadêmico de Teste de Software*
+
 
 
 
