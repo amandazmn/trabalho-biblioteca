@@ -10,45 +10,48 @@
 
 ## Introdução
 
-O presente projeto tem como objetivo o desenvolvimento de um *Sistema de Biblioteca* com foco na 
-aplicação de práticas de **Teste de Software**. O trabalho foi elaborado com base no paradigma de 
-**Desenvolvimento Orientado a Testes (TDD)**, visando demonstrar o ciclo de implementação incremental 
-e a validação contínua das funcionalidades por meio de testes automatizados.
+O presente projeto tem como objetivo o desenvolvimento de um *Sistema de Biblioteca* 
+com suporte a *empréstimo de livros, devoluções, cálculo de multas e envio de notificações por e-mail*.  
+O código é modular, extensível e totalmente coberto por testes automatizados.
 
 ---
 
 ## Objetivos de Aprendizagem
 
-- Aplicar o ciclo de vida de testes utilizando **pytest** em Python.  
-- Utilizar **TDD** para o desenvolvimento iterativo de funcionalidades.  
-- Implementar testes de **exceções**, **parâmetros**, **stubs** e **mocks**.  
-- Simular uma integração de componentes em um fluxo completo.  
-- Avaliar cobertura de testes (linhas ≥ 80%, branches ≥ 70%).  
-- Demonstrar controle de qualidade contínuo (CI) e desempenho (timeout).
+* Simular as operações de uma biblioteca digital:
+  - Cadastro e controle de *usuários, **livros* e *empréstimos*.
+  - Cálculo de *multas* para devoluções em atraso.
+  - Emissão de *faturas* e envio de *notificações por e-mail*.
+* Servir como exemplo de:
+  - *Boas práticas de design orientado a objetos*.
+  - *Testes automatizados com Pytest*.
+  - *Integração Contínua (CI)* via GitHub Actions.
+
 
 ---
 
 ## Estrutura do Projeto
 
-```
-trabalho-biblioteca-master/
-├── python/
-│   ├── src/
-│   │   └── biblioteca/
-│   │       ├── __init__.py
-│   │       ├── entidades.py
-│   │       ├── repositorio.py
-│   │       ├── servico.py
-│   │       └── email_service.py
-│   └── tests/
-│       ├── test_emprestimo.py
-│       ├── test_devolucao.py
-│       ├── test_excecoes.py
-│       ├── test_performance.py
-│       └── test_integracao.py
+plaintext
+python/
+├── src/
+│ └── biblioteca/
+│ ├── modelos.py # Define entidades: Livro, Usuário, Empréstimo
+│ ├── repositorio.py # Repositório em memória para persistência
+│ ├── servico.py # Lógica principal: empréstimos, devoluções, multas
+│ ├── fatura_service.py # Geração de faturas por atraso
+│ ├── email_service.py # Simula envio de notificações por e-mail
+│ ├── relogio.py # Abstração para controle de datas (testabilidade)
+│ └── init.py
+├── tests/ # Testes unitários e de integração
+│ ├── test_emprestimo.py
+│ ├── test_devolucao_email_multa.py
+│ ├── test_fatura.py
+│ ├── test_modelos_repositorio.py
+│ └── ...
 ├── requirements.txt
-└── README.md
-```
+└── pytest.ini
+
 
 ---
 
@@ -60,46 +63,6 @@ trabalho-biblioteca-master/
 - **Integração Contínua:** GitHub Actions  
 
 ---
-
-## Configuração e Execução
-
-### 1 Instalação do Ambiente Virtual
-```bash
-python -m venv .venv
-source .venv/bin/activate   # Linux/Mac
-.venv\Scripts\activate    # Windows
-pip install -r requirements.txt
-```
-
-### 2 Execução dos Testes
-```bash
-pytest -v
-```
-
-### 3 Geração do Relatório de Cobertura
-```bash
-coverage run -m pytest
-coverage html
-start htmlcov/index.html    # Abre o relatório no navegador
-```
-
----
-
-## Estratégia de Testes
-
-O projeto segue o padrão **AAA (Arrange, Act, Assert)** em todos os testes.  
-Cada caso de teste é independente, claro e de fácil manutenção.
-
-### Categorias de Testes Implementadas
-
-| Categoria | Descrição | Arquivo |
-|------------|------------|----------|
-| Testes de Unidade | Validam entidades e regras básicas | `test_emprestimo.py` |
-| Testes de Integração | Simulam o fluxo completo de empréstimo e devolução | `test_integracao.py` |
-| Testes de Exceções | Verificam erros esperados em cenários inválidos | `test_excecoes.py` |
-| Testes Parametrizados | Avaliam múltiplas combinações de entrada | `test_devolucao.py` |
-| Testes de Performance | Verificam tempo de resposta máximo | `test_performance.py` |
-
 ---
 
 ## TDD – Desenvolvimento Orientado a Testes
@@ -113,6 +76,7 @@ O projeto foi conduzido conforme o ciclo **Red → Green → Refactor**:
 Os commits no repositório Git refletem claramente este ciclo, evidenciando a evolução incremental das funcionalidades.
 
 ---
+---
 
 ## Stubs, Mocks e Exceções
 
@@ -122,53 +86,100 @@ Os commits no repositório Git refletem claramente este ciclo, evidenciando a ev
 
 ---
 
-## Integração Simulada
+## Regras de Negócio
 
-A integração completa do sistema é testada simulando o ciclo **empréstimo → devolução → notificação de multa**,
-utilizando componentes reais e stubs de serviços auxiliares.
+### Empréstimos
+- Um *usuário* pode pegar livros emprestados até seu *limite máximo*.
+- Um *livro* só pode ser emprestado se estiver *disponível*.
+- Ao emprestar:
+  - O livro passa a ter disponivel = False.
+  - É criado um registro de Emprestimo com a data atual.
+- O prazo padrão de devolução é de *7 dias*.
+
+### Devoluções
+- O usuário deve devolver o livro dentro do prazo.
+- Ao devolver:
+  - O livro volta a ficar disponível.
+  - Se houver atraso, é calculada uma *multa*.
+
+### Multas
+- Multa diária padrão: *R$ 2,00 por dia de atraso*.
+- Multa calculada em servico.calcular_multa().
+- O cálculo é feito com base na diferença entre data_devolucao e data_emprestimo.
+
+### Faturas e E-mails
+- O módulo fatura_service.py gera uma *fatura* com o valor total devido.
+- O módulo email_service.py envia um *e-mail automático* ao usuário:
+  - Aviso de devolução.
+  - Notificação de multa (se aplicável).
 
 ---
 
-## Teste de Performance
+## Componentes Técnicos
 
-Um dos casos de teste verifica se as operações críticas de devolução ocorrem dentro de um tempo limite 
-definido (≤ 0,2s), garantindo a responsividade do sistema.
+| Componente | Responsabilidade Principal |
+|-------------|-----------------------------|
+| modelos.py | Define classes Livro, Usuario, Emprestimo, Fatura. |
+| repositorio.py | Armazena entidades em memória (pode ser substituído por banco de dados). |
+| servico.py | Implementa regras de negócio: empréstimo, devolução e cálculo de multa. |
+| email_service.py | Envia notificações simuladas. |
+| fatura_service.py | Gera faturas baseadas em atrasos. |
+| relogio.py | Fornece abstração para data atual (facilita testes determinísticos). |
 
 ---
 
+## Testes Automatizados
+
+Os testes cobrem *todas as regras de negócio* do sistema.
+
+### Estrutura de Testes
+- *Unitários*: Validam comportamento isolado (empréstimo, multa, e-mail).
+- *Integração*: Simulam fluxos completos de empréstimo → devolução → fatura.
+- *Performance e Exceções*: Testam limites e validação de erros.
+
+### Framework
+- [Pytest](https://docs.pytest.org/)
+- Configuração: pytest.ini
+- Execução:
+  bash
+  pytest -v
+    
+
+### Cobertura
+
+A suíte de testes cobre praticamente 100% dos módulos principais (servico.py, fatura_service.py, repositorio.py, etc.), 
+conforme indicado pelo uso intensivo de asserts e mocks nos testes.
+
+---
 ## Integração Contínua (CI)
 
-O projeto possui pipeline configurado via **GitHub Actions**, que executa automaticamente os testes 
-e gera relatórios de cobertura a cada *commit*.
+O projeto utiliza GitHub Actions para CI/CD automatizado:
 
-Exemplo de workflow (`.github/workflows/ci.yml`):
-
-```yaml
-name: CI - Sistema de Biblioteca
-
-on: [push, pull_request]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Instalar dependências
-        run: pip install -r requirements.txt
-      - name: Executar testes
-        run: pytest -v --maxfail=1 --disable-warnings
-      - name: Gerar cobertura
-        run: |
-          pip install coverage
-          coverage run -m pytest
-          coverage report -m
-```
+- Local do workflow: .github/workflows/ci.yml
+- Ações executadas:
+    1. Instalação do Python e dependências (requirements.txt)
+    2. Execução da suíte de testes com Pytest     
+    3. Geração de relatório de cobertura
+    4. (Opcional) Upload para Codecov ou similar
 
 ---
+
+## Instalação e Execução
+### Requisitos
+- Python 3.11+
+- pip e venv
+
+### Passos
+basch
+cd python
+python -m venv .venv
+source .venv/bin/activate  # ou .venv\Scripts\activate no Windows
+pip install -r requirements.txt
+pytest -v
+`
+<img width="834" height="886" alt="image" src="https://github.com/user-attachments/assets/d9617c71-a0d3-432b-812e-d594d9244eda" />
+
+
 
 ## Conclusão
 
@@ -179,3 +190,4 @@ demonstrando a importância das boas práticas de teste, automação e TDD no ci
 
 **Católica SC – Engenharia de Software – 2025/2**  
 *Trabalho Acadêmico de Teste de Software*
+
