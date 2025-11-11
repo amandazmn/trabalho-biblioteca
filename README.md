@@ -32,6 +32,7 @@ O código é modular, extensível e totalmente coberto por testes automatizados.
 
 ## Estrutura do Projeto
 
+
 plaintext
 python/
 ├── src/
@@ -63,7 +64,6 @@ python/
 - **Integração Contínua:** GitHub Actions  
 
 ---
----
 
 ## TDD – Desenvolvimento Orientado a Testes
 
@@ -75,7 +75,6 @@ O projeto foi conduzido conforme o ciclo **Red → Green → Refactor**:
 
 Os commits no repositório Git refletem claramente este ciclo, evidenciando a evolução incremental das funcionalidades.
 
----
 ---
 
 ## Stubs, Mocks e Exceções
@@ -190,4 +189,5 @@ demonstrando a importância das boas práticas de teste, automação e TDD no ci
 
 **Católica SC – Engenharia de Software – 2025/2**  
 *Trabalho Acadêmico de Teste de Software*
+
 
