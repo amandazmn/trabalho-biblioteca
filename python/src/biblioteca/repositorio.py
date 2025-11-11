@@ -29,3 +29,15 @@ class InMemoryRepo:
             e for e in self.emprestimos
             if e.usuario_id == usuario_id and e.data_devolucao is None
         ]
+    
+
+class InMemoryFaturaRepository:
+
+    def __init__(self):
+        self._faturas = []
+
+    def salvar(self, fatura: dict):
+        self._faturas.append(fatura)
+
+    def listar(self):
+        return list(self._faturas)
